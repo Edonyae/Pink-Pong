@@ -9,7 +9,7 @@ screen_height = 720
 screen_width = 1280
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
-running = True
+running = False
 pygame.display.set_caption("Pong")
 
 
@@ -31,27 +31,10 @@ ball_speed_x = 7 * random.choice((1, -1))
 ball_speed_y = 7 * random.choice((1, -1))
 ball_radius = 30
 
-def ball_animation():
-    global ball_x, ball_y, ball_speed_x, ball_speed_y
+# Score variable
 
-    # Update ball position
-    ball_x += ball_speed_x
-    ball_y += ball_speed_y
-
-    # Screen animation
-    if ball_y - ball_radius <= 0 or ball_y + ball_radius >= screen_height:
-        ball_speed_y *= -1
-    if ball_x - ball_radius <= 0 or ball_x + ball_radius >= screen_width:
-        ball_speed_x *= -1
-
-    # Paddle animation with ball
-    if (left_paddle_y <= ball_y <= left_paddle_y + paddle_height and
-        left_paddle_x <= ball_x - ball_radius <= left_paddle_x + paddle_width):
-        ball_speed_x *= -1
-
-    if (right_paddle_y <= ball_y <= right_paddle_y + paddle_height and
-        right_paddle_x <= ball_x + ball_radius <= right_paddle_x + paddle_width):
-        ball_speed_x *= -1
+left_score = 0
+right_score = 0
 
 # Draw menu
 
@@ -82,25 +65,36 @@ in_menu = True
 selected_option = 0  # 0: Jouer, 1: Options, 2: Quitter
 text_play, text_options, text_quit = draw_menu(selected_option)
 
+game_run = False
+
 while in_menu:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT: # QUIT bouton
             in_menu = False
             running = False
+            game_run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if selected_option == 0:
-                    in_menu = False
+                    in_menu =False
+                    game_run = True
+                    running = True
                 elif selected_option == 2:
                     in_menu = False
                     running = False
+                    game_run = False
             if event.key == pygame.K_ESCAPE:
                 in_menu = False
                 running = False
+
+
+        # Option suivante, et précédente
+
             if event.key == pygame.K_UP:
                 selected_option = (selected_option - 1) % 3
             if event.key == pygame.K_DOWN:
                 selected_option = (selected_option + 1) % 3
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if (screen_width // 2 - text_play.get_width() // 2 <= mouse_x <= screen_width // 2 + text_play.get_width() // 2 and
@@ -113,10 +107,36 @@ while in_menu:
                 running = False
 
     text_play, text_options, text_quit = draw_menu(selected_option)
+    print(f"in_menu: {in_menu}, game_run: {game_run}, running : {running}")
+
+def ball_animation():
+    global ball_x, ball_y, ball_speed_x, ball_speed_y, left_score, right_score
+
+    # Update ball position
+    ball_x += ball_speed_x
+    ball_y += ball_speed_y
+
+    # Screen animation
+    if ball_y - ball_radius <= 0 or ball_y + ball_radius >= screen_height:
+        ball_speed_y *= -1
+    if ball_x - ball_radius <= 0:
+        right_score += 1
+        reset()
+    if ball_x + ball_radius >= screen_width:
+        left_score += 1
+        reset()
+
+    # Paddle animation with ball
+    if (left_paddle_y <= ball_y <= left_paddle_y + paddle_height and
+        left_paddle_x <= ball_x - ball_radius <= left_paddle_x + paddle_width):
+        ball_speed_x *= -1
+
+    if (right_paddle_y <= ball_y <= right_paddle_y + paddle_height and
+        right_paddle_x <= ball_x + ball_radius <= right_paddle_x + paddle_width):
+        ball_speed_x *= -1
 
 def reset():
-    global in_menu, selected_option, running, ball_x, ball_y, ball_speed_x, ball_speed_y, left_paddle_y, right_paddle_y
-    in_menu = True
+    global in_menu, selected_option, running, ball_x, ball_y, ball_speed_x, ball_speed_y, left_paddle_y, right_paddle_y, left_score, right_score
     selected_option = 0
     running = True
     ball_x = screen_width // 2
@@ -125,19 +145,22 @@ def reset():
     ball_speed_y = 7 * random.choice((1, -1))
     left_paddle_y = 310
     right_paddle_y = 310
-
+    
 
 while running:
     # pygame.QUIT lorsque le X button est pressé
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_ESCAPE:
                 in_menu = True
+                game_run = False
                 running = True
-                break
-                
+
+
+    # Afficher l'état des variables in_menu et game_run
+    print(f"in_menu: {in_menu}, game_run: {game_run}, running : {running}, Score Left : {left_score}, Score Right : {right_score}")            
 
     # get the key
     
@@ -176,6 +199,15 @@ while running:
     for i in range(10, 720, 20):  # Draws a dashed line from top to bottom
         pygame.draw.rect(screen, (255, 255, 255), (638, i, 4, 10))
     
+    # Draw scores
+    font = pygame.font.Font(None, 74)
+    left_score_text = font.render(str(left_score), True, "white")
+    right_score_text = font.render(str(right_score), True, "white")
+    screen.blit(left_score_text, (screen_width // 4, 20))
+    screen.blit(right_score_text, (3 * screen_width // 4, 20))
+
+
+
     # screen work
     pygame.display.flip()
 
