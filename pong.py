@@ -55,18 +55,33 @@ def ball_animation():
 
 # Draw menu
 
-def drawmenu ():
+def draw_menu(selected_option):
     screen.fill("pink")
     font = pygame.font.Font(None, 74)
     text_play = font.render("Jouer", True, "white")
+    text_options = font.render("Options", True, "white")
     text_quit = font.render("Quitter", True, "white")
-    screen.blit(text_play, (screen_width // 2 - text_play.get_width() // 2, screen_height // 2 - 50))
+
+    # Highlight selected option
+    if selected_option == 0:
+        text_play = font.render("Jouer", True, "yellow")
+    elif selected_option == 1:
+        text_options = font.render("Options", True, "yellow")
+    elif selected_option == 2:
+        text_quit = font.render("Quitter", True, "yellow")
+
+    screen.blit(text_play, (screen_width // 2 - text_play.get_width() // 2, screen_height // 2 - 100))
+    screen.blit(text_options, (screen_width // 2 - text_options.get_width() // 2, screen_height // 2 - 25))
     screen.blit(text_quit, (screen_width // 2 - text_quit.get_width() // 2, screen_height // 2 + 50))
     pygame.display.flip()
 
-# Menu
+    return text_play, text_options, text_quit
 
+# Menu
 in_menu = True
+selected_option = 0  # 0: Jouer, 1: Options, 2: Quitter
+text_play, text_options, text_quit = draw_menu(selected_option)
+
 while in_menu:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -74,20 +89,55 @@ while in_menu:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                in_menu = False
-                running = True
+                if selected_option == 0:
+                    in_menu = False
+                elif selected_option == 2:
+                    in_menu = False
+                    running = False
             if event.key == pygame.K_ESCAPE:
                 in_menu = False
                 running = False
+            if event.key == pygame.K_UP:
+                selected_option = (selected_option - 1) % 3
+            if event.key == pygame.K_DOWN:
+                selected_option = (selected_option + 1) % 3
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.pos
+            if (screen_width // 2 - text_play.get_width() // 2 <= mouse_x <= screen_width // 2 + text_play.get_width() // 2 and
+                screen_height // 2 - 100 <= mouse_y <= screen_height // 2 - 100 + text_play.get_height()):
+                in_menu = False
+                running = True
+            elif (screen_width // 2 - text_quit.get_width() // 2 <= mouse_x <= screen_width // 2 + text_quit.get_width() // 2 and
+                  screen_height // 2 + 50 <= mouse_y <= screen_height // 2 + 50 + text_quit.get_height()):
+                in_menu = False
+                running = False
 
-    drawmenu()
-    clock.tick(60)
+    text_play, text_options, text_quit = draw_menu(selected_option)
+
+def reset():
+    global in_menu, selected_option, running, ball_x, ball_y, ball_speed_x, ball_speed_y, left_paddle_y, right_paddle_y
+    in_menu = True
+    selected_option = 0
+    running = True
+    ball_x = screen_width // 2
+    ball_y = random.randint(50, screen_height - 50)
+    ball_speed_x = 7 * random.choice((1, -1))
+    ball_speed_y = 7 * random.choice((1, -1))
+    left_paddle_y = 310
+    right_paddle_y = 310
+
 
 while running:
     # pygame.QUIT lorsque le X button est pressé
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                in_menu = True
+                running = True
+                break
+                
 
     # get the key
     
