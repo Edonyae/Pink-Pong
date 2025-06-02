@@ -7,14 +7,15 @@ _________________________________________________________________
 
 > Ce jeu fait partie d'une série de jeux dans le cadre d'un projet scolaire visant à créer une borne d'arcade à l'aide d'un Raspberry PI.
 
-![[Main.png]]
+![Main.png](Img/Main.png)
+
 
 ## Fonctionnalités
 
 - **Vitesse** : Permet de choisir le niveau de difficulté d'une partie à partir de la vitesse de la balle, pouvant aller de 1 à 15.
 - **Longueur** : Permet de régler la longueur des raquettes afin d'ajuster la surface de réception de la balle.
 
-![[Options.png]]
+![Options.png](Img/Options.png)
 
 ## Installation
 
