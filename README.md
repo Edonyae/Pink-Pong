@@ -15,7 +15,7 @@ _________________________________________________________________
 - **Vitesse** : Permet de choisir le niveau de difficulté d'une partie à partir de la vitesse de la balle, pouvant aller de 1 à 15.
 - **Longueur** : Permet de régler la longueur des raquettes afin d'ajuster la surface de réception de la balle.
 
-![Options.png](Img/Options.png)
+![Options.png](Img/Option.png)
 
 ## Installation
 
