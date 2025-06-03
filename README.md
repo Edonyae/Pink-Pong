@@ -12,8 +12,9 @@ _________________________________________________________________
 
 ## Fonctionnalités
 
-- **Vitesse** : Permet de choisir le niveau de difficulté d'une partie à partir de la vitesse de la balle, pouvant aller de 1 à 15.
+- **Vitesse balle** : Permet de choisir le niveau de difficulté d'une partie à partir de la vitesse de la balle, pouvant aller de 1 à 15.
 - **Longueur** : Permet de régler la longueur des raquettes afin d'ajuster la surface de réception de la balle.
+- **Vitesse raquette** : Une autre option pour la difficulté du jeu, afin de choisir entre 5 et 15 la vitesse des raquettes.
 
 ![Options.png](Img/Option.png)
 
